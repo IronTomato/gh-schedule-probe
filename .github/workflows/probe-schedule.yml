@@ -1,0 +1,20 @@
+name: Schedule Probe
+
+on:
+  schedule:
+    # 快对照：5 分钟粒度，最快 5 分钟内就能拿到「事件是否投递」的证据
+    - cron: "*/5 * * * *"
+    # 与 gh-ops-lab（PRIVATE）完全相同的表达式，用于排除表达式本身因素
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    name: 定时投递探针
+    runs-on: ubuntu-latest
+    steps:
+      - name: 记录触发时刻与触发事件
+        run: |
+          echo "UTC now : $(date -u '+%Y-%m-%d %H:%M:%S')"
+          echo "触发事件: ${{ github.event_name }}"
+          echo "计划表达式: ${{ github.event.schedule }}"
